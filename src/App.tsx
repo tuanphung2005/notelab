@@ -8,29 +8,28 @@ function App() {
   const [name, setName] = useState("");
 
   async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
     setGreetMsg(await invoke("greet", { name }));
   }
 
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
+    <main className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-blue-100 p-4">
+      <h1 className="text-4xl font-bold mb-8 text-blue-700 drop-shadow-lg">Welcome to <span className="text-blue-500">Tauri</span> + <span className="text-purple-500">React</span></h1>
 
-      <div className="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
+      <div className="flex flex-row gap-8 mb-6">
+        <a href="https://vite.dev" target="_blank" rel="noopener noreferrer">
+          <img src="/vite.svg" className="w-20 h-20 hover:scale-110 transition-transform duration-200" alt="Vite logo" />
         </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
+        <a href="https://tauri.app" target="_blank" rel="noopener noreferrer">
+          <img src="/tauri.svg" className="w-20 h-20 hover:scale-110 transition-transform duration-200" alt="Tauri logo" />
         </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
+        <a href="https://react.dev" target="_blank" rel="noopener noreferrer">
+          <img src={reactLogo} className="w-20 h-20 hover:scale-110 transition-transform duration-200" alt="React logo" />
         </a>
       </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
+      <p className="mb-8 text-gray-600 text-lg">Click on the Tauri, Vite, and React logos to learn more.</p>
 
       <form
-        className="row"
+        className="flex flex-row gap-4 items-center mb-4"
         onSubmit={(e) => {
           e.preventDefault();
           greet();
@@ -38,12 +37,18 @@ function App() {
       >
         <input
           id="greet-input"
+          className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 text-base"
           onChange={(e) => setName(e.currentTarget.value)}
           placeholder="Enter a name..."
         />
-        <button type="submit">Greet</button>
+        <button
+          type="submit"
+          className="px-5 py-2 rounded bg-blue-500 text-white font-semibold hover:bg-blue-600 transition-colors duration-200 shadow"
+        >
+          Greet
+        </button>
       </form>
-      <p>{greetMsg}</p>
+      <p className="text-xl text-green-600 font-medium min-h-[2rem]">{greetMsg}</p>
     </main>
   );
 }
