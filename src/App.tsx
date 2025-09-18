@@ -1,7 +1,11 @@
+'use client'
+
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
+
+import { Button, Input } from "@heroui/react";
 
 function App() {
   const [greetMsg, setGreetMsg] = useState("");
@@ -35,18 +39,13 @@ function App() {
           greet();
         }}
       >
-        <input
+        <Input
           id="greet-input"
-          className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 text-base"
           onChange={(e) => setName(e.currentTarget.value)}
           placeholder="Enter a name..."
+          variant="bordered"
         />
-        <button
-          type="submit"
-          className="px-5 py-2 rounded bg-blue-500 text-white font-semibold hover:bg-blue-600 transition-colors duration-200 shadow"
-        >
-          Greet
-        </button>
+        <Button type="submit">Greet</Button>
       </form>
       <p className="text-xl text-green-600 font-medium min-h-[2rem]">{greetMsg}</p>
     </main>

@@ -10,9 +10,11 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@heroui/react": "^2.8.4",
     "@tailwindcss/vite": "^4.1.13",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-opener": "^2",
+    "framer-motion": "^12.23.14",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "tailwindcss": "^4.1.13"
@@ -24,5 +26,9 @@
     "typescript": "~5.8.3",
     "vite": "^7.0.4",
     "@tauri-apps/cli": "^2"
-  }
+  },
+  "trustedDependencies": [
+    "@heroui/shared-utils",
+    "@tailwindcss/oxide"
+  ]
 }
