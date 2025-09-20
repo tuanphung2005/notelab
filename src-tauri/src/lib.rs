@@ -100,6 +100,26 @@ fn save_note(filename: String, content: String) -> Result<(), String> {
 }
 
 #[tauri::command]
+fn rename_note(old_filename: String, new_filename: String) -> Result<(), String> {
+    let vault_path = get_vault_path()?;
+    let old_path = vault_path.join(&old_filename);
+    let new_path = vault_path.join(&new_filename);
+    
+    if !old_path.exists() {
+        return Err(format!("file does not exist: {}", old_filename));
+    }
+    
+    if new_path.exists() {
+        return Err(format!("file with name '{}' already exists", new_filename));
+    }
+    
+    fs::rename(&old_path, &new_path)
+        .map_err(|e| format!("failed to rename file: {}", e))?;
+    
+    Ok(())
+}
+
+#[tauri::command]
 fn delete_note(filename: String) -> Result<(), String> {
     let vault_path = get_vault_path()?;
     let file_path = vault_path.join(&filename);
@@ -126,6 +146,7 @@ pub fn run() {
             create_new_note,
             read_note,
             save_note,
+            rename_note,
             delete_note
         ])
         .run(tauri::generate_context!())

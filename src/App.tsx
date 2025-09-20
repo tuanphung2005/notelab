@@ -1,17 +1,14 @@
 'use client'
 
 import { useEffect, useState, useCallback } from "react";
-import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
 import Sidebar from "./components/sidebar/Sidebar";
-import LineNumberedEditor from "./components/editor/LineNumberedEditor";
+import LineNumberedEditor from "./components/editor/Editor";
 import MarkdownPreview from "./components/preview/MarkdownPreview";
-import type { SidebarKey } from "./types";
-
-interface FileInfo {
-  name: string;
-  path: string;
-}
+import type { SidebarKey, FileInfo } from "./types";
+import { validateFilename } from "./utils/fileValidation";
+import { showError } from "./utils/notifications";
+import { vaultService } from "./services/vaultService";
 
 function App() {
   const [activeKey, setActiveKey] = useState<SidebarKey | string>("notes");
@@ -19,13 +16,9 @@ function App() {
   const [vaultFiles, setVaultFiles] = useState<FileInfo[]>([]);
   const [vaultPath, setVaultPath] = useState<string>("");
   const [currentFile, setCurrentFile] = useState<string>("");
-  
-  const [isTauri, setIsTauri] = useState(false);
 
   // refresh when window refocus
   useEffect(() => {
-    if (!isTauri) return;
-
     const handleFocus = () => {
       loadVaultFiles();
     };
@@ -35,18 +28,17 @@ function App() {
     return () => {
       window.removeEventListener('focus', handleFocus);
     };
-  }, [isTauri]);
+  }, []);
 
-  // is tauri
+  // new vault
   useEffect(() => {
     const initializeApp = async () => {
       try {
-        const path = await invoke<string>('get_vault_info');
+        const path = await vaultService.getVaultInfo();
         setVaultPath(path);
-        setIsTauri(true);
         loadVaultFiles();
       } catch (error) {
-        console.error('not running in Tauri environment');
+        console.error('Failed to initialize vault:', error);
       }
     };
     
@@ -55,7 +47,7 @@ function App() {
 
   const loadVaultFiles = async () => {
     try {
-      const files = await invoke<FileInfo[]>('list_vault_files');
+      const files = await vaultService.listVaultFiles();
       setVaultFiles(files);
     } catch (error) {
       console.error('failed to load vault files:', error);
@@ -64,51 +56,66 @@ function App() {
   };
 
   const handleNewNote = async () => {
-    if (!isTauri) {
-      alert('plz download desktop version');
-      return;
-    }
-
     try {
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const filename = `New Note ${timestamp}.md`;
+
+      const validationError = validateFilename(filename);
+      if (validationError) {
+        showError(`Cannot create note: ${validationError}`);
+        return;
+      }
       
-      await invoke<string>('create_new_note', { filename });
+      await vaultService.createNewNote(filename);
       
       await loadVaultFiles();
       await openFile(filename);
       
     } catch (error) {
-      console.error('failed to create new note:', error);
-      alert(`failed to create new note: ${error}`);
+      showError(`Failed to create new note: ${error}`);
     }
   };
 
   const openFile = async (filename: string) => {
-    if (!isTauri) {
-      alert('download desktop plz');
-      return;
-    }
-
     try {
-      const content = await invoke<string>('read_note', { filename });
+      const content = await vaultService.readNote(filename);
       setMarkdown(content);
       setCurrentFile(filename);
     } catch (error) {
-      console.error('failed to open:', error);
-      alert(`failed to open: ${error}`);
+      showError(`Failed to open file: ${error}`);
     }
   };
 
   const saveCurrentFile = useCallback(async (content: string) => {
-    if (!isTauri || !currentFile) return;
+    if (!currentFile) return;
 
     try {
-      await invoke('save_note', { filename: currentFile, content });
+      await vaultService.saveNote(currentFile, content);
     } catch (error) {
       console.error('failed to save file:', error);
     }
-  }, [isTauri, currentFile]);
+  }, [currentFile]);
+
+  const handleRenameNote = async (oldFilename: string, newFilename: string) => {
+
+    const newName = newFilename.endsWith('.md') ? newFilename : `${newFilename}.md`;
+    const validationError = validateFilename(newName);
+    if (validationError) {
+      showError(validationError);
+      return;
+    }
+
+    try {
+      await vaultService.renameNote(oldFilename, newName);
+      
+      if (currentFile === oldFilename) {
+        setCurrentFile(newName);
+      }
+      await loadVaultFiles();
+    } catch (error) {
+      showError(`Failed to rename file: ${error}`);
+    }
+  };
 
   // autosave 1s timeout
   useEffect(() => {
@@ -130,7 +137,8 @@ function App() {
         vaultPath={vaultPath}
         vaultFiles={vaultFiles}
         onOpenFile={openFile}
-        canCreate={isTauri}
+        onRenameFile={handleRenameNote}
+        canCreate={true}
         currentFile={currentFile}
       />
 
