@@ -2,6 +2,8 @@ import { Button, Input, Popover, PopoverTrigger, PopoverContent } from "@heroui/
 import { useState } from "react";
 import type { FileItemProps } from "../../types";
 
+import { Pencil } from "lucide-react";
+
 export default function FileItem({ 
   file, 
   isActive, 
@@ -39,50 +41,53 @@ export default function FileItem({
           {file.name.replace('.md', '')}
         </Button>
         
-        <Popover radius="none">
-          <PopoverTrigger>
-            <Button
-              size="sm"
-              variant="light"
-              className="min-w-unit-8 transition-opacity"
-              title="Rename file"
-              radius="none"
-            >
-              edit name
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="p-3">
-            <div className="flex flex-col gap-2">
-              <div className="text-small font-medium">Rename "{file.name.replace('.md', '')}"</div>
-              <Input
+        {isActive && (
+          <Popover radius="none">
+            <PopoverTrigger>
+              <Button
                 size="sm"
-                defaultValue={file.name.replace('.md', '')}
-                onChange={(e) => setNewFileName(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleFinishRename(file.name);
-                  } else if (e.key === 'Escape') {
-                    handleCancelRename();
-                  }
-                }}
-                placeholder="Enter new name"
-                autoFocus
+                variant="light"
+                className="min-w-unit-8 transition-opacity"
+                title="Rename file"
                 radius="none"
-              />
-              <div className="flex gap-2 justify-end">
-                <Button
+                isIconOnly
+              >
+                <Pencil size={14} />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="p-3">
+              <div className="flex flex-col gap-2">
+                <div className="text-small font-medium">Rename "{file.name.replace('.md', '')}"</div>
+                <Input
                   size="sm"
-                  color="primary"
-                  onPress={() => handleFinishRename(file.name)}
-                  isDisabled={!newFileName.trim()}
+                  defaultValue={file.name.replace('.md', '')}
+                  onChange={(e) => setNewFileName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleFinishRename(file.name);
+                    } else if (e.key === 'Escape') {
+                      handleCancelRename();
+                    }
+                  }}
+                  placeholder="Enter new name"
+                  autoFocus
                   radius="none"
-                >
-                  Rename
-                </Button>
+                />
+                <div className="flex gap-2 justify-end">
+                  <Button
+                    size="sm"
+                    color="primary"
+                    onPress={() => handleFinishRename(file.name)}
+                    isDisabled={!newFileName.trim()}
+                    radius="none"
+                  >
+                    Rename
+                  </Button>
+                </div>
               </div>
-            </div>
-          </PopoverContent>
-        </Popover>
+            </PopoverContent>
+          </Popover>
+        )}
       </div>
     </div>
   );
