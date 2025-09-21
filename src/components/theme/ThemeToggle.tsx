@@ -29,9 +29,10 @@ export default function ThemeToggle() {
   return (
     <Button
       size="sm"
-      variant="light"
+      variant="shadow"
       onPress={() => setMode((m) => (m === "dark" ? "light" : "dark"))}
       aria-label="Toggle theme"
+      radius="none"
     >
       {mode === "dark" ? "light" : "dark"}
     </Button>

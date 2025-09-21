@@ -6,5 +6,6 @@ export const showError = (message: string) => {
     title: "Error",
     description: message,
     color:"danger",
+    radius:"none"
   });
 };

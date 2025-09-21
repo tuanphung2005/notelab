@@ -24,26 +24,29 @@ export default function FileItem({
   return (
     <div className="relative group">
       <div className="flex items-center gap-1">
-        <button
-          className={`flex-1 text-left text-small truncate px-2 py-1 rounded hover:bg-default-100 ${
+        <Button
+          className={`flex-1 text-small ${
             isActive ? 'bg-primary-50 text-primary' : ''
           }`}
           title={file.path}
-          onClick={() => {
-            console.log("Clicked file:", file);
+          variant="light"
+          size="sm"
+          radius="none"
+          onPress={() => {
             onOpenFile?.(file.name);
           }}
         >
           {file.name.replace('.md', '')}
-        </button>
+        </Button>
         
-        <Popover>
+        <Popover radius="none">
           <PopoverTrigger>
             <Button
               size="sm"
               variant="light"
               className="min-w-unit-8 transition-opacity"
               title="Rename file"
+              radius="none"
             >
               edit name
             </Button>
@@ -64,6 +67,7 @@ export default function FileItem({
                 }}
                 placeholder="Enter new name"
                 autoFocus
+                radius="none"
               />
               <div className="flex gap-2 justify-end">
                 <Button
@@ -71,6 +75,7 @@ export default function FileItem({
                   color="primary"
                   onPress={() => handleFinishRename(file.name)}
                   isDisabled={!newFileName.trim()}
+                  radius="none"
                 >
                   Rename
                 </Button>

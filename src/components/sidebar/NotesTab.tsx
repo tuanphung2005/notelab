@@ -21,10 +21,11 @@ export default function NotesTab({
           onNewNote?.();
         }} 
         isDisabled={!canCreate}
+        radius="none"
       >
         new note {!canCreate ? "(disabled)" : ""}
       </Button>
-      <Input size="sm" placeholder="Search notes..." />
+      <Input size="sm" placeholder="Search notes..." radius="none"/>
       <Divider className="my-1" />
       {vaultPath && (
         <div className="text-tiny text-foreground-500 break-all mb-2">vault: {vaultPath}</div>
