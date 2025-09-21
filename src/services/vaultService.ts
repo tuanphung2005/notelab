@@ -6,6 +6,10 @@ export const vaultService = {
     return await invoke<string>('get_vault_info');
   },
 
+  async getRoot(): Promise<string> {
+    return await invoke<string>('get_root');
+  },
+
   async listVaultFiles(): Promise<FileInfo[]> {
     return await invoke<FileInfo[]>('list_vault_files');
   },

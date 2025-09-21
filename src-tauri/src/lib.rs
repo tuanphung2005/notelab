@@ -9,44 +9,81 @@ struct FileInfo {
     path: String,
 }
 
-fn get_vault_path() -> Result<PathBuf, String> {
-    let home_dir = dirs::document_dir()
+fn get_vault_root() -> Result<PathBuf, String> {
+    let docs = dirs::document_dir()
         .ok_or("could not find /Documents directory")?;
     
-    let vault_path = home_dir.join("notelab_vault");
+    let root = docs.join("notelab_vault");
     
-    // create vault
-    if !vault_path.exists() {
-        fs::create_dir_all(&vault_path)
-            .map_err(|e| format!("failed to create vault directory: {}", e))?;
+    // create vault root directory
+    if !root.exists() {
+        fs::create_dir_all(&root)
+            .map_err(|e| format!("failed to create vault root directory: {}", e))?;
     }
     
-    Ok(vault_path)
+    Ok(root)
+}
+
+fn get_notes_path() -> Result<PathBuf, String> {
+    let root = get_vault_root()?;
+    let notes = root.join("notes");
+    
+    // create notes directory
+    if !notes.exists() {
+        fs::create_dir_all(&notes)
+            .map_err(|e| format!("failed to create notes directory: {}", e))?;
+    }
+    
+    Ok(notes)
+}
+
+// config directory
+fn get_config_path() -> Result<PathBuf, String> {
+    let vault_root = get_vault_root()?;
+    let config_path = vault_root.join("config");
+    
+    // create config directory
+    if !config_path.exists() {
+        fs::create_dir_all(&config_path)
+            .map_err(|e| format!("failed to create config directory: {}", e))?;
+    }
+    
+    Ok(config_path)
+}
+
+fn get_vault_path() -> Result<PathBuf, String> {
+    get_notes_path()
 }
 
 #[tauri::command]
 fn get_vault_info() -> Result<String, String> {
-    let vault_path = get_vault_path()?;
-    Ok(vault_path.to_string_lossy().to_string())
+    let notes = get_notes_path()?;
+    Ok(notes.to_string_lossy().to_string())
+}
+
+#[tauri::command]
+fn get_root() -> Result<String, String> {
+    let root = get_vault_root()?;
+    Ok(root.to_string_lossy().to_string())
 }
 
 #[tauri::command]
 fn list_vault_files() -> Result<Vec<FileInfo>, String> {
-    let vault_path = get_vault_path()?;
+    let notes = get_vault_path()?;
     
     let mut files = Vec::new();
     
-    if let Ok(entries) = fs::read_dir(&vault_path) {
+    if let Ok(entries) = fs::read_dir(&notes) {
         for entry in entries {
             if let Ok(entry) = entry {
                 let path = entry.path();
                 if path.is_file() {
-                    if let Some(extension) = path.extension() {
-                        if extension == "md" {
+                    if let Some(ext) = path.extension() {
+                        if ext == "md" {
                             if let Some(name) = path.file_name() {
                                 let name = name.to_string_lossy().to_string();
-                                let full_path = path.to_string_lossy().to_string();
-                                files.push(FileInfo { name, path: full_path });
+                                let path = path.to_string_lossy().to_string();
+                                files.push(FileInfo { name, path });
                             }
                         }
                     }
@@ -142,6 +179,7 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .invoke_handler(tauri::generate_handler![
             get_vault_info,
+            get_root,
             list_vault_files,
             create_new_note,
             read_note,
