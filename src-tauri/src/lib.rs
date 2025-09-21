@@ -96,7 +96,7 @@ fn list_vault_files() -> Result<Vec<FileInfo>, String> {
 }
 
 #[tauri::command]
-fn create_new_note(filename: String) -> Result<String, String> {
+fn create_note(filename: String) -> Result<String, String> {
     let vault_path = get_vault_path()?;
     let file_path = vault_path.join(&filename);
     
@@ -181,7 +181,7 @@ pub fn run() {
             get_vault_info,
             get_root,
             list_vault_files,
-            create_new_note,
+            create_note,
             read_note,
             save_note,
             rename_note,
