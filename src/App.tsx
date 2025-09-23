@@ -1,45 +1,201 @@
 'use client'
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import "./App.css";
 import Sidebar from "./components/sidebar/Sidebar";
-import LineNumberedEditor from "./components/editor/LineNumberedEditor";
+import LineNumberedEditor from "./components/editor/Editor";
 import MarkdownPreview from "./components/preview/MarkdownPreview";
-import type { SidebarKey } from "./types";
+import { StatusBar } from "./components/StatusBar";
+import type { SidebarKey, FileInfo } from "./types";
+import { validateFilename } from "./utils/fileValidation";
+import { showError } from "./utils/notifications";
+import { vaultService } from "./services/vaultService";
+import { useEditorStats, useNotesStats, useSidebarStats } from "./hooks/useStatusStats";
 
 function App() {
   const [activeKey, setActiveKey] = useState<SidebarKey | string>("notes");
-  // example markdown content
-  const [markdown, setMarkdown] = useState<string>(
-    "# Welcome to NoteLab\n\n- Edit on the left\n- Preview on the right\n\n```ts\nconst hello = 'world'\n```\n\n| Tables | Are | Cool |\n|-------:|:---:|:----:|\n| right  |  c  |  c   |\n"
-  );
+  const startingText = "# welcome to NoteLab\n\nstart writing your notes here...";
+  const [markdown, setMarkdown] = useState<string>(startingText);
+  const [vaultFiles, setVaultFiles] = useState<FileInfo[]>([]);
+  const [vaultPath, setVaultPath] = useState<string>("");
+  const [currentFile, setCurrentFile] = useState<string>("");
 
+  // status hook
+  const editorStats = useEditorStats(markdown);
+  const notesStats = useNotesStats(vaultFiles, vaultFiles.find(f => f.name === currentFile));
+  const sidebarStats = useSidebarStats();
+
+  // refresh when window refocus
   useEffect(() => {
-  }, [markdown]);
+    const handleFocus = () => {
+      loadVaultFiles();
+    };
+
+    window.addEventListener('focus', handleFocus);
+    
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, []);
+
+  // new vault
+  useEffect(() => {
+    const initializeApp = async () => {
+      try {
+        const path = await vaultService.getVaultInfo();
+        setVaultPath(path);
+        loadVaultFiles();
+      } catch (error) {
+        console.error('Failed to initialize vault:', error);
+      }
+    };
+    
+    initializeApp();
+  }, []);
+
+  const loadVaultFiles = async () => {
+    try {
+      const files = await vaultService.listVaultFiles();
+      setVaultFiles(files);
+    } catch (error) {
+      console.error('failed to load vault files:', error);
+      setVaultFiles([]);
+    }
+  };
+
+  const handleNewNote = async () => {
+    try {
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const filename = `New Note ${timestamp}.md`;
+
+      const validationError = validateFilename(filename);
+      if (validationError) {
+        showError(`cannot create note: ${validationError}`);
+        return;
+      }
+      
+      await vaultService.createNewNote(filename);
+      
+      await loadVaultFiles();
+      await openFile(filename);
+      
+    } catch (error) {
+      showError(`failed to create new note: ${error}`);
+    }
+  };
+
+  const openFile = async (filename: string) => {
+    try {
+      const content = await vaultService.readNote(filename);
+      setMarkdown(content);
+      setCurrentFile(filename);
+    } catch (error) {
+      showError(`Failed to open file: ${error}`);
+    }
+  };
+
+  const saveCurrentFile = useCallback(async (content: string) => {
+    if (!currentFile) return;
+
+    try {
+      await vaultService.saveNote(currentFile, content);
+    } catch (error) {
+      console.error('failed to save file:', error);
+    }
+  }, [currentFile]);
+
+  const handleRenameNote = async (oldFilename: string, newFilename: string) => {
+
+    const newName = newFilename.endsWith('.md') ? newFilename : `${newFilename}.md`;
+    const validationError = validateFilename(newName);
+    if (validationError) {
+      showError(validationError);
+      return;
+    }
+
+    try {
+      await vaultService.renameNote(oldFilename, newName);
+      
+      if (currentFile === oldFilename) {
+        setCurrentFile(newName);
+      }
+      await loadVaultFiles();
+    } catch (error) {
+      showError(`Failed to rename file: ${error}`);
+    }
+  };
+
+  const handleDeleteNote = async (filename: string) => {
+    try {
+      await vaultService.deleteNote(filename);
+      
+      // only able to delete currently selected file so clear it anyway
+      setCurrentFile("");
+      setMarkdown(startingText);
+      
+      await loadVaultFiles();
+    } catch (error) {
+      showError(`failed to delete file: ${error}`);
+    }
+  };
+
+  // autosave 1s timeout
+  useEffect(() => {
+    if (!currentFile) return;
+
+    const timeoutId = setTimeout(() => {
+      saveCurrentFile(markdown);
+    }, 1000);
+
+    return () => clearTimeout(timeoutId);
+  }, [markdown, currentFile, saveCurrentFile]);
 
   return (
-    <div className="min-h-screen grid grid-cols-[260px_1fr]">
-      <Sidebar activeKey={activeKey} onChange={setActiveKey} onNewNote={() => {}} />
+    <div className="h-screen grid grid-rows-[1fr_auto]">
+      <div className="grid grid-cols-[260px_1fr] overflow-hidden">
+        <Sidebar 
+          activeKey={activeKey} 
+          onChange={setActiveKey} 
+          onNewNote={handleNewNote}
+          vaultPath={vaultPath}
+          vaultFiles={vaultFiles}
+          onOpenFile={openFile}
+          onRenameFile={handleRenameNote}
+          onDeleteFile={handleDeleteNote}
+          canCreate={true}
+          currentFile={currentFile}
+        />
 
-      <main className="h-screen grid grid-cols-2">
-        <section className="h-full border-r border-default-200 bg-content1">
-          <div className="h-full grid grid-rows-[auto_1fr]">
-            <div className="flex items-center justify-between p-3 border-b border-default-200">
-              <span className="font-medium">editor</span>
+        <main className="h-full grid grid-cols-2">
+          <section className="h-full border-r border-default-200 bg-content1">
+            <div className="h-full grid grid-rows-[auto_1fr]">
+              <div className="flex items-center justify-between p-3 border-b border-default-200">
+                <span className="font-medium">{currentFile ? `editor — ${currentFile}` : "editor"}</span>
+              </div>
+              <LineNumberedEditor value={markdown} onChange={setMarkdown} />
             </div>
-            <LineNumberedEditor value={markdown} onChange={setMarkdown} />
-          </div>
-        </section>
+          </section>
 
-        <section className="h-full bg-content1">
-          <div className="h-full grid grid-rows-[auto_1fr]">
-            <div className="flex items-center justify-between p-3 border-b border-default-200">
-              <span className="font-medium">preview</span>
+          <section className="h-full bg-content1">
+            <div className="h-full grid grid-rows-[auto_1fr]">
+              <div className="flex items-center justify-between p-3 border-b border-default-200">
+                <span className="font-medium">preview</span>
+              </div>
+              <MarkdownPreview value={markdown} />
             </div>
-            <MarkdownPreview value={markdown} />
-          </div>
-        </section>
-      </main>
+          </section>
+        </main>
+      </div>
+      
+      <StatusBar
+        sidebarStatus={sidebarStats.status}
+        notesStatus={notesStats.selectedNoteName ? 
+          `${notesStats.selectedNoteName} (${notesStats.totalNotes} notes)` : 
+          `${notesStats.totalNotes} notes`
+        }
+        editorWordCount={editorStats.wordCount}
+        editorLineCount={editorStats.lineCount}
+      />
     </div>
   );
 }

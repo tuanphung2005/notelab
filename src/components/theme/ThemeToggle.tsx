@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Button } from "@heroui/react";
 
+import { Sun, Moon } from "lucide-react";
+
 function getSystemPrefersDark() {
   return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
 }
@@ -32,8 +34,10 @@ export default function ThemeToggle() {
       variant="light"
       onPress={() => setMode((m) => (m === "dark" ? "light" : "dark"))}
       aria-label="Toggle theme"
+      radius="none"
+      isIconOnly
     >
-      {mode === "dark" ? "light" : "dark"}
+      {mode === "dark" ? <Sun size={20} /> : <Moon size={20} />}
     </Button>
   );
 }

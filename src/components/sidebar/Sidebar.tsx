@@ -1,14 +1,23 @@
-import { Tabs, Tab, Button, Input, Divider } from "@heroui/react";
-import ThemeToggle from "../theme/ThemeToggle";
+import { Tabs, Tab } from "@heroui/react";
+import SidebarHeader from "./SidebarHeader";
+import NotesTab from "./NotesTab";
 import type { SidebarProps } from "../../types";
 
-export default function Sidebar({ activeKey, onChange, onNewNote }: SidebarProps) {
+export default function Sidebar({ 
+  activeKey, 
+  onChange, 
+  onNewNote, 
+  vaultPath, 
+  vaultFiles = [], 
+  onOpenFile,
+  onRenameFile,
+  onDeleteFile,
+  canCreate,
+  currentFile
+}: SidebarProps) {
   return (
     <aside className="h-screen border-r border-default-200 p-3 overflow-y-auto bg-content1">
-      <div className="flex items-center justify-between gap-2 mb-3">
-        <span className="font-semibold">NoteLab</span>
-        <ThemeToggle />
-      </div>
+      <SidebarHeader vaultPath={vaultPath} />
       <Tabs
         selectedKey={activeKey}
         onSelectionChange={(k) => onChange(String(k))}
@@ -17,12 +26,16 @@ export default function Sidebar({ activeKey, onChange, onNewNote }: SidebarProps
         className="w-full"
       >
         <Tab key="notes" title="Notes">
-          <div className="flex flex-col gap-2 mt-2">
-            <Button size="sm" color="primary" onPress={onNewNote}>new note</Button>
-            <Input size="sm" placeholder="Search notes..." />
-            <Divider className="my-1" />
-            <div className="text-tiny text-foreground-500">no folders opened</div>
-          </div>
+          <NotesTab
+            onNewNote={onNewNote}
+            canCreate={canCreate}
+            vaultPath={vaultPath}
+            vaultFiles={vaultFiles}
+            currentFile={currentFile}
+            onOpenFile={onOpenFile}
+            onRenameFile={onRenameFile}
+            onDeleteFile={onDeleteFile}
+          />
         </Tab>
         <Tab key="settings" title="Settings">
           <div className="text-sm text-foreground-500 mt-2">coming soon</div>

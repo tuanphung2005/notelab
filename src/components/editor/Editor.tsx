@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
-import type { LineNumberedEditorProps } from "../../types";
+import type { EditorProps } from "../../types";
 
-export default function LineNumberedEditor({ value, onChange }: LineNumberedEditorProps) {
+export default function LineNumberedEditor({ value, onChange }: EditorProps) {
   const editorRef = useRef<HTMLTextAreaElement | null>(null);
   const gutterRef = useRef<HTMLDivElement | null>(null);
 
