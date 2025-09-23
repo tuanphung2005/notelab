@@ -8,6 +8,10 @@ on:
       - 'package-lock.json'
       - '.github/**'
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   bump-version:
     runs-on: ubuntu-latest
@@ -46,19 +50,18 @@ jobs:
         git add package.json
         git commit -m "🔖 bump version to v${{ steps.new_version.outputs.version }}"
         
-    - name: Create and push tag
+    - name: Create tag
+      run: git tag "v${{ steps.new_version.outputs.version }}"
+        
+    - name: Push changes
       run: |
-        git tag "v${{ steps.new_version.outputs.version }}"
-        git push origin main
-        git push origin "v${{ steps.new_version.outputs.version }}"
+        git push origin main --follow-tags
 
     - name: Create Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v1
       with:
         tag_name: "v${{ steps.new_version.outputs.version }}"
-        release_name: "Release v${{ steps.new_version.outputs.version }}"
+        name: "Release v${{ steps.new_version.outputs.version }}"
         body: |
           🚀 Auto-generated release for version ${{ steps.new_version.outputs.version }}
           
@@ -66,3 +69,5 @@ jobs:
           - Auto-bumped patch version from v${{ steps.current_version.outputs.version }} to v${{ steps.new_version.outputs.version }}
         draft: false
         prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
