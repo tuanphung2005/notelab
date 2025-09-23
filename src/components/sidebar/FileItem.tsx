@@ -2,7 +2,7 @@ import { Button, Input, Popover, PopoverTrigger, PopoverContent } from "@heroui/
 import { useState } from "react";
 import type { FileItemProps } from "../../types";
 
-import { Pencil } from "lucide-react";
+import { Pencil, Check } from "lucide-react";
 
 export default function FileItem({ 
   file, 
@@ -48,16 +48,14 @@ export default function FileItem({
                 size="sm"
                 variant="light"
                 className="min-w-unit-8 transition-opacity"
-                title="Rename file"
                 radius="none"
                 isIconOnly
               >
                 <Pencil size={14} />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="p-3">
-              <div className="flex flex-col gap-2">
-                <div className="text-small font-medium">Rename "{file.name.replace('.md', '')}"</div>
+            <PopoverContent className="">
+              <div className="flex flex-row gap-3 py-1">
                 <Input
                   size="sm"
                   defaultValue={file.name.replace('.md', '')}
@@ -69,7 +67,7 @@ export default function FileItem({
                       handleCancelRename();
                     }
                   }}
-                  placeholder="Enter new name"
+                  placeholder="enter new name"
                   autoFocus
                   radius="none"
                 />
@@ -80,8 +78,10 @@ export default function FileItem({
                     onPress={() => handleFinishRename(file.name)}
                     isDisabled={!newFileName.trim()}
                     radius="none"
+                    variant="light"
+                    isIconOnly
                   >
-                    Rename
+                    <Check size={20} />
                   </Button>
                 </div>
               </div>

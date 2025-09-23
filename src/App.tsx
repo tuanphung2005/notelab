@@ -5,10 +5,12 @@ import "./App.css";
 import Sidebar from "./components/sidebar/Sidebar";
 import LineNumberedEditor from "./components/editor/Editor";
 import MarkdownPreview from "./components/preview/MarkdownPreview";
+import { StatusBar } from "./components/StatusBar";
 import type { SidebarKey, FileInfo } from "./types";
 import { validateFilename } from "./utils/fileValidation";
 import { showError } from "./utils/notifications";
 import { vaultService } from "./services/vaultService";
+import { useEditorStats, useNotesStats, useSidebarStats } from "./hooks/useStatusStats";
 
 function App() {
   const [activeKey, setActiveKey] = useState<SidebarKey | string>("notes");
@@ -16,6 +18,11 @@ function App() {
   const [vaultFiles, setVaultFiles] = useState<FileInfo[]>([]);
   const [vaultPath, setVaultPath] = useState<string>("");
   const [currentFile, setCurrentFile] = useState<string>("");
+
+  // status hook
+  const editorStats = useEditorStats(markdown);
+  const notesStats = useNotesStats(vaultFiles, vaultFiles.find(f => f.name === currentFile));
+  const sidebarStats = useSidebarStats();
 
   // refresh when window refocus
   useEffect(() => {
@@ -129,38 +136,50 @@ function App() {
   }, [markdown, currentFile, saveCurrentFile]);
 
   return (
-    <div className="min-h-screen grid grid-cols-[260px_1fr]">
-      <Sidebar 
-        activeKey={activeKey} 
-        onChange={setActiveKey} 
-        onNewNote={handleNewNote}
-        vaultPath={vaultPath}
-        vaultFiles={vaultFiles}
-        onOpenFile={openFile}
-        onRenameFile={handleRenameNote}
-        canCreate={true}
-        currentFile={currentFile}
+    <div className="h-screen grid grid-rows-[1fr_auto]">
+      <div className="grid grid-cols-[260px_1fr] overflow-hidden">
+        <Sidebar 
+          activeKey={activeKey} 
+          onChange={setActiveKey} 
+          onNewNote={handleNewNote}
+          vaultPath={vaultPath}
+          vaultFiles={vaultFiles}
+          onOpenFile={openFile}
+          onRenameFile={handleRenameNote}
+          canCreate={true}
+          currentFile={currentFile}
+        />
+
+        <main className="h-full grid grid-cols-2">
+          <section className="h-full border-r border-default-200 bg-content1">
+            <div className="h-full grid grid-rows-[auto_1fr]">
+              <div className="flex items-center justify-between p-3 border-b border-default-200">
+                <span className="font-medium">{currentFile ? `editor — ${currentFile}` : "editor"}</span>
+              </div>
+              <LineNumberedEditor value={markdown} onChange={setMarkdown} />
+            </div>
+          </section>
+
+          <section className="h-full bg-content1">
+            <div className="h-full grid grid-rows-[auto_1fr]">
+              <div className="flex items-center justify-between p-3 border-b border-default-200">
+                <span className="font-medium">preview</span>
+              </div>
+              <MarkdownPreview value={markdown} />
+            </div>
+          </section>
+        </main>
+      </div>
+      
+      <StatusBar
+        sidebarStatus={sidebarStats.status}
+        notesStatus={notesStats.selectedNoteName ? 
+          `${notesStats.selectedNoteName} (${notesStats.totalNotes} notes)` : 
+          `${notesStats.totalNotes} notes`
+        }
+        editorWordCount={editorStats.wordCount}
+        editorLineCount={editorStats.lineCount}
       />
-
-      <main className="h-screen grid grid-cols-2">
-        <section className="h-full border-r border-default-200 bg-content1">
-          <div className="h-full grid grid-rows-[auto_1fr]">
-            <div className="flex items-center justify-between p-3 border-b border-default-200">
-              <span className="font-medium">{currentFile ? `editor — ${currentFile}` : "editor"}</span>
-            </div>
-            <LineNumberedEditor value={markdown} onChange={setMarkdown} />
-          </div>
-        </section>
-
-        <section className="h-full bg-content1">
-          <div className="h-full grid grid-rows-[auto_1fr]">
-            <div className="flex items-center justify-between p-3 border-b border-default-200">
-              <span className="font-medium">preview</span>
-            </div>
-            <MarkdownPreview value={markdown} />
-          </div>
-        </section>
-      </main>
     </div>
   );
 }

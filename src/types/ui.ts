@@ -1,12 +1,12 @@
 export type SidebarKey = "notes" | "settings";
 
-// File system interfaces
+// file
 export interface FileInfo {
   name: string;
   path: string;
 }
 
-// Component props interfaces
+// component
 export interface SidebarProps {
   activeKey: SidebarKey | string;
   onChange: (key: SidebarKey | string) => void;
@@ -47,4 +47,11 @@ export interface EditorProps {
 
 export interface MarkdownPreviewProps {
   value: string;
+}
+
+export interface StatusBarProps {
+  sidebarStatus?: string;
+  notesStatus?: string;
+  editorWordCount?: number;
+  editorLineCount?: number;
 }
