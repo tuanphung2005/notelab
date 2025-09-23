@@ -9,7 +9,8 @@ export default function NotesTab({
   vaultFiles = [],
   currentFile = "",
   onOpenFile,
-  onRenameFile
+  onRenameFile,
+  onDeleteFile
 }: NotesTabProps) {
   return (
     <div className="flex flex-col gap-2 mt-2">
@@ -25,14 +26,14 @@ export default function NotesTab({
       >
         new note {!canCreate ? "(disabled)" : ""}
       </Button>
-      <Input size="sm" placeholder="Search notes..." radius="none"/>
+      <Input size="sm" placeholder="search notes..." radius="none"/>
       <Divider className="my-1" />
       {vaultPath && (
         <div className="text-tiny text-foreground-500 break-all mb-2">vault: {vaultPath}</div>
       )}
       {vaultFiles && vaultFiles.length > 0 && (
         <div className="mt-2 flex flex-col gap-1">
-          <div className="text-tiny text-foreground-400">Files ({vaultFiles.length}):</div>
+          <div className="text-tiny text-foreground-400">files ({vaultFiles.length}):</div>
           {vaultFiles.map((f) => (
             <FileItem
               key={f.name}
@@ -40,6 +41,7 @@ export default function NotesTab({
               isActive={currentFile === f.name}
               onOpenFile={onOpenFile || (() => {})}
               onRenameFile={onRenameFile || (() => {})}
+              onDeleteFile={onDeleteFile || (() => {})}
             />
           ))}
         </div>

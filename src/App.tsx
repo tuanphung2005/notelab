@@ -14,7 +14,8 @@ import { useEditorStats, useNotesStats, useSidebarStats } from "./hooks/useStatu
 
 function App() {
   const [activeKey, setActiveKey] = useState<SidebarKey | string>("notes");
-  const [markdown, setMarkdown] = useState<string>("# Welcome to NoteLab\n\nStart writing your notes here...");
+  const startingText = "# welcome to NoteLab\n\nstart writing your notes here...";
+  const [markdown, setMarkdown] = useState<string>(startingText);
   const [vaultFiles, setVaultFiles] = useState<FileInfo[]>([]);
   const [vaultPath, setVaultPath] = useState<string>("");
   const [currentFile, setCurrentFile] = useState<string>("");
@@ -69,7 +70,7 @@ function App() {
 
       const validationError = validateFilename(filename);
       if (validationError) {
-        showError(`Cannot create note: ${validationError}`);
+        showError(`cannot create note: ${validationError}`);
         return;
       }
       
@@ -79,7 +80,7 @@ function App() {
       await openFile(filename);
       
     } catch (error) {
-      showError(`Failed to create new note: ${error}`);
+      showError(`failed to create new note: ${error}`);
     }
   };
 
@@ -124,6 +125,20 @@ function App() {
     }
   };
 
+  const handleDeleteNote = async (filename: string) => {
+    try {
+      await vaultService.deleteNote(filename);
+      
+      // only able to delete currently selected file so clear it anyway
+      setCurrentFile("");
+      setMarkdown(startingText);
+      
+      await loadVaultFiles();
+    } catch (error) {
+      showError(`failed to delete file: ${error}`);
+    }
+  };
+
   // autosave 1s timeout
   useEffect(() => {
     if (!currentFile) return;
@@ -146,6 +161,7 @@ function App() {
           vaultFiles={vaultFiles}
           onOpenFile={openFile}
           onRenameFile={handleRenameNote}
+          onDeleteFile={handleDeleteNote}
           canCreate={true}
           currentFile={currentFile}
         />

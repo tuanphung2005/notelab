@@ -15,7 +15,7 @@ export const vaultService = {
   },
 
   async createNewNote(filename: string): Promise<string> {
-    return await invoke<string>('create_new_note', { filename });
+    return await invoke<string>('create_note', { filename });
   },
 
   async readNote(filename: string): Promise<string> {
@@ -31,5 +31,9 @@ export const vaultService = {
       oldFilename, 
       newFilename 
     });
+  },
+
+  async deleteNote(filename: string): Promise<void> {
+    return await invoke('delete_note', { filename });
   }
 };

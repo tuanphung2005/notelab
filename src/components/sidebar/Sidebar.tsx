@@ -11,6 +11,7 @@ export default function Sidebar({
   vaultFiles = [], 
   onOpenFile,
   onRenameFile,
+  onDeleteFile,
   canCreate,
   currentFile
 }: SidebarProps) {
@@ -33,6 +34,7 @@ export default function Sidebar({
             currentFile={currentFile}
             onOpenFile={onOpenFile}
             onRenameFile={onRenameFile}
+            onDeleteFile={onDeleteFile}
           />
         </Tab>
         <Tab key="settings" title="Settings">

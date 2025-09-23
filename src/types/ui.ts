@@ -15,6 +15,7 @@ export interface SidebarProps {
   vaultFiles?: FileInfo[];
   onOpenFile?: (filename: string) => void;
   onRenameFile?: (oldFilename: string, newFilename: string) => void;
+  onDeleteFile?: (filename: string) => void;
   canCreate?: boolean;
   currentFile?: string;
 }
@@ -31,6 +32,7 @@ export interface NotesTabProps {
   currentFile?: string;
   onOpenFile?: (filename: string) => void;
   onRenameFile?: (oldFilename: string, newFilename: string) => void;
+  onDeleteFile?: (filename: string) => void;
 }
 
 export interface FileItemProps {
@@ -38,6 +40,7 @@ export interface FileItemProps {
   isActive: boolean;
   onOpenFile?: (filename: string) => void;
   onRenameFile?: (oldFilename: string, newFilename: string) => void;
+  onDeleteFile?: (filename: string) => void;
 }
 
 export interface EditorProps {
@@ -54,4 +57,11 @@ export interface StatusBarProps {
   notesStatus?: string;
   editorWordCount?: number;
   editorLineCount?: number;
+}
+
+export interface DeleteConfirmModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  fileName: string;
+  onConfirmDelete: () => void;
 }
