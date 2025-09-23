@@ -1,0 +1,68 @@
+name: Auto Version Bump
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/**'
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        
+    - name: Configure git
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+
+    - name: Get current version
+      id: current_version
+      run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+    - name: Bump patch version
+      run: |
+        npm version patch --no-git-tag-version
+        
+    - name: Get new version
+      id: new_version
+      run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+        
+    - name: Commit version bump
+      run: |
+        git add package.json
+        git commit -m "🔖 bump version to v${{ steps.new_version.outputs.version }}"
+        
+    - name: Create and push tag
+      run: |
+        git tag "v${{ steps.new_version.outputs.version }}"
+        git push origin main
+        git push origin "v${{ steps.new_version.outputs.version }}"
+
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: "v${{ steps.new_version.outputs.version }}"
+        release_name: "Release v${{ steps.new_version.outputs.version }}"
+        body: |
+          🚀 Auto-generated release for version ${{ steps.new_version.outputs.version }}
+          
+          **Changes:**
+          - Auto-bumped patch version from v${{ steps.current_version.outputs.version }} to v${{ steps.new_version.outputs.version }}
+        draft: false
+        prerelease: false

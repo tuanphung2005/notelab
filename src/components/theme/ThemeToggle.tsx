@@ -33,7 +33,6 @@ export default function ThemeToggle() {
       size="sm"
       variant="light"
       onPress={() => setMode((m) => (m === "dark" ? "light" : "dark"))}
-      aria-label="Toggle theme"
       radius="none"
       isIconOnly
     >
