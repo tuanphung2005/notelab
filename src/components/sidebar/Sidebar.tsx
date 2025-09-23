@@ -21,7 +21,6 @@ export default function Sidebar({
       <Tabs
         selectedKey={activeKey}
         onSelectionChange={(k) => onChange(String(k))}
-        aria-label="Sidebar tabs"
         variant="underlined"
         className="w-full"
       >
