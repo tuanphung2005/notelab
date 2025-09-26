@@ -65,3 +65,10 @@ export interface DeleteConfirmModalProps {
   fileName: string;
   onConfirmDelete: () => void;
 }
+
+export interface RenamePopoverProps {
+  fileName: string;
+  onRename: (oldName: string, newName: string) => void;
+  onDelete: (fileName: string) => void;
+  triggerComponent?: React.ReactNode;
+}

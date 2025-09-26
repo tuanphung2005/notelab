@@ -1,8 +1,8 @@
-import { Button, Input, Divider, Tabs, Tab, Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
+import { Button, Input, Divider, Tabs, Tab } from "@heroui/react";
 import { useState } from "react";
 import type { NotesTabProps } from "../../types";
-import { Cog, Pencil, Trash2, Check } from "lucide-react";
 import DeleteConfirmModal from "./DeleteConfirmModal";
+import RenamePopover from "./RenamePopover";
 
 export default function NotesTab({
   onNewNote,
@@ -14,39 +14,7 @@ export default function NotesTab({
   onRenameFile,
   onDeleteFile
 }: NotesTabProps) {
-  const [isRenaming, setIsRenaming] = useState(false);
-  const [newFileName, setNewFileName] = useState("");
-  const [renamingFile, setRenamingFile] = useState("");
   const [deleteModal, setDeleteModal] = useState<string | null>(null);
-
-  const handleStartRename = (filename: string) => {
-    setIsRenaming(true);
-    setRenamingFile(filename);
-    setNewFileName(filename.replace('.md', ''));
-  };
-
-  const handleFinishRename = () => {
-    if (newFileName.trim() && renamingFile) {
-      onRenameFile?.(renamingFile, newFileName.trim());
-    }
-    setIsRenaming(false);
-    setNewFileName("");
-    setRenamingFile("");
-  };
-
-  const handleCancelRename = () => {
-    setIsRenaming(false);
-    setNewFileName("");
-    setRenamingFile("");
-  };
-
-  const handlePopoverChange = (isOpen: boolean) => {
-    if (!isOpen && isRenaming) {
-      setIsRenaming(false);
-      setNewFileName("");
-      setRenamingFile("");
-    }
-  };
 
   const handleDeleteClick = (filename: string) => {
     setDeleteModal(filename);
@@ -85,11 +53,11 @@ export default function NotesTab({
             selectedKey={currentFile}
             onSelectionChange={(key) => onOpenFile?.(String(key))}
             isVertical={true}
-            variant="light"
+            variant="underlined"
             className="w-full"
             classNames={{
               tabList: "w-full",
-              tabContent: "w-full flex px-3 py-2"
+              tabContent: "w-full flex py-2"
             }}
           >
             {vaultFiles.map((file) => (
@@ -101,68 +69,11 @@ export default function NotesTab({
                       {file.name.replace('.md', '')}
                     </span>
                     {currentFile === file.name && (
-                      <Popover onOpenChange={handlePopoverChange}>
-                        <PopoverTrigger>
-                          <Button
-                            size="sm"
-                            variant="light"
-                            isIconOnly
-                            className="ml-2 opacity-70 hover:opacity-100"
-                          >
-                            <Cog size={14} />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent>
-                          {!isRenaming || renamingFile !== file.name ? (
-                            <div className="flex flex-col gap-1 p-1">
-                              <Button
-                                size="sm"
-                                variant="light"
-                                onPress={() => handleStartRename(file.name)}
-                                className="justify-start"
-                              >
-                                <Pencil size={14} />
-                                rename
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="light"
-                                onPress={() => handleDeleteClick(file.name)}
-                                className="justify-start text-danger"
-                              >
-                                <Trash2 size={14} />
-                                delete
-                              </Button>
-                            </div>
-                          ) : (
-                            <div className="flex flex-row gap-2 p-1">
-                              <Input
-                                size="sm"
-                                value={newFileName}
-                                onChange={(e) => setNewFileName(e.target.value)}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter') {
-                                    handleFinishRename();
-                                  } else if (e.key === 'Escape') {
-                                    handleCancelRename();
-                                  }
-                                }}
-                                placeholder="enter new name"
-                                autoFocus
-                              />
-                              <Button
-                                size="sm"
-                                color="primary"
-                                onPress={handleFinishRename}
-                                isDisabled={!newFileName.trim()}
-                                isIconOnly
-                              >
-                                <Check size={16} />
-                              </Button>
-                            </div>
-                          )}
-                        </PopoverContent>
-                      </Popover>
+                      <RenamePopover
+                        fileName={file.name}
+                        onRename={(oldName, newName) => onRenameFile?.(oldName, newName)}
+                        onDelete={handleDeleteClick}
+                      />
                     )}
                   </div>
                 }
