@@ -1,4 +1,4 @@
-import { Button, Input, Divider, Tabs, Tab, Popover, PopoverTrigger, PopoverContent, useDisclosure } from "@heroui/react";
+import { Button, Input, Divider, Tabs, Tab, Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
 import { useState } from "react";
 import type { NotesTabProps } from "../../types";
 import { Cog, Pencil, Trash2, Check } from "lucide-react";
@@ -38,6 +38,14 @@ export default function NotesTab({
     setIsRenaming(false);
     setNewFileName("");
     setRenamingFile("");
+  };
+
+  const handlePopoverChange = (isOpen: boolean) => {
+    if (!isOpen && isRenaming) {
+      setIsRenaming(false);
+      setNewFileName("");
+      setRenamingFile("");
+    }
   };
 
   const handleDeleteClick = (filename: string) => {
@@ -93,7 +101,7 @@ export default function NotesTab({
                       {file.name.replace('.md', '')}
                     </span>
                     {currentFile === file.name && (
-                      <Popover>
+                      <Popover onOpenChange={handlePopoverChange}>
                         <PopoverTrigger>
                           <Button
                             size="sm"
