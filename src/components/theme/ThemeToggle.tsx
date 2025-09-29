@@ -34,7 +34,7 @@ export default function ThemeToggle() {
       } catch (error) {
         console.error('Failed to load theme:', error);
 
-        
+
         const systemTheme = getSystemPrefersDark() ? "dark" : "light";
         setTheme(systemTheme);
         applyTheme(systemTheme);

@@ -1,12 +1,14 @@
+/**
+ * Component prop interfaces for UI components
+ */
+
 export type SidebarKey = "notes" | "settings";
 
-// file
 export interface FileInfo {
   name: string;
   path: string;
 }
 
-// component
 export interface SidebarProps {
   activeKey: SidebarKey | string;
   onChange: (key: SidebarKey | string) => void;

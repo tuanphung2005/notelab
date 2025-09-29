@@ -1,11 +1,6 @@
 import { Button, Card, CardBody, CardHeader } from "@heroui/react";
 import { Sun, Moon, Monitor } from "lucide-react";
-import { AppConfig } from "../../../../types";
-
-interface ThemeSettingsProps {
-  currentTheme: AppConfig['theme'];
-  onThemeChange: (theme: AppConfig['theme']) => void;
-}
+import { AppConfig, ThemeSettingsProps } from "../../../../types";
 
 const applyTheme = (theme: AppConfig['theme']) => {
   const root = document.documentElement;

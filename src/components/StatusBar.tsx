@@ -1,5 +1,5 @@
 import React from 'react';
-import type { StatusBarProps } from '../types/ui';
+import type { StatusBarProps } from '../types';
 
 export const StatusBar: React.FC<StatusBarProps> = ({
   sidebar = '',

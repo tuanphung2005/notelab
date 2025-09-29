@@ -1,6 +1,6 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Checkbox } from "@heroui/react";
 import { useState } from "react";
-import type { DeleteConfirmModalProps } from "../../types/ui";
+import type { DeleteConfirmModalProps } from "../../types";
 
 export default function DeleteConfirmModal({
   isOpen,

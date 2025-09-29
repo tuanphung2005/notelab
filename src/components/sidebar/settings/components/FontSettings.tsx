@@ -1,5 +1,5 @@
 import { Select, SelectItem, Slider, Card, CardBody, CardHeader } from "@heroui/react";
-import { EditorConfig, PreviewConfig } from "../../../../types";
+import { FontSettingsProps } from "../../../../types";
 
 const FONT_FAMILIES = [
   { key: "monospace", label: "monospace", value: "monospace" },
@@ -21,14 +21,6 @@ const FONT_FAMILIES = [
   { key: "georgia", label: "georgia", value: "Georgia, serif" },
   { key: "times", label: "times", value: "'Times New Roman', serif" },
 ];
-
-interface FontSettingsProps {
-  title: string;
-  config: EditorConfig | PreviewConfig;
-  onConfigChange: (updates: Partial<EditorConfig | PreviewConfig>) => void;
-  fontSizeRange: { min: number; max: number };
-  defaultFont: string;
-}
 
 export default function FontSettings({ 
   title, 

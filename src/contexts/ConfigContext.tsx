@@ -1,12 +1,6 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef } from 'react';
-import type { AppConfig } from '../types';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import type { AppConfig, ConfigContextType, ConfigProviderProps } from '../types';
 import { configService } from '../services/configService';
-
-interface ConfigContextType {
-  config: AppConfig | null;
-  updateConfig: (updates: Partial<AppConfig>) => void;
-  reloadConfig: () => Promise<void>;
-}
 
 const ConfigContext = createContext<ConfigContextType | undefined>(undefined);
 
@@ -17,10 +11,6 @@ export const useConfig = () => {
   }
   return context;
 };
-
-interface ConfigProviderProps {
-  children: ReactNode;
-}
 
 export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
   const [config, setConfig] = useState<AppConfig | null>(null);
@@ -57,7 +47,7 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
 
 
     setConfig(newConfig);
-    
+
 
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
