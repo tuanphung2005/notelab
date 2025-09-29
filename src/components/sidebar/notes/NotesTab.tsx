@@ -1,8 +1,8 @@
 import { Button, Input, Divider, Tabs, Tab } from "@heroui/react";
 import { useState } from "react";
-import type { NotesTabProps } from "../../types";
-import DeleteConfirmModal from "./DeleteConfirmModal";
-import RenamePopover from "./RenamePopover";
+import type { NotesTabProps } from "../../../types";
+import DeleteConfirmModal from "../DeleteConfirmModal";
+import RenamePopover from "../RenamePopover";
 
 export default function NotesTab({
   onNewNote,
@@ -43,9 +43,6 @@ export default function NotesTab({
       </Button>
       <Input size="sm" placeholder="search notes..." radius="none"/>
       <Divider className="my-1" />
-      {vaultPath && (
-        <div className="text-tiny text-foreground-500 break-all mb-2">vault: {vaultPath}</div>
-      )}
       {vaultFiles && vaultFiles.length > 0 && (
         <div className="mt-2 flex flex-col gap-1">
           <div className="text-tiny text-foreground-400">files ({vaultFiles.length}):</div>

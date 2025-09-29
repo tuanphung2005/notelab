@@ -1,6 +1,7 @@
 import { Tabs, Tab } from "@heroui/react";
 import SidebarHeader from "./SidebarHeader";
-import NotesTab from "./NotesTab";
+import NotesTab from "./notes";
+import SettingsTab from "./settings";
 import type { SidebarProps } from "../../types";
 
 export default function Sidebar({ 
@@ -37,7 +38,7 @@ export default function Sidebar({
           />
         </Tab>
         <Tab key="settings" title="Settings">
-          <div className="text-sm text-foreground-500 mt-2">coming soon</div>
+          <SettingsTab />
         </Tab>
       </Tabs>
     </aside>
