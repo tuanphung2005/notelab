@@ -2,7 +2,7 @@ name: Auto Version Bump
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, dev ]
     paths-ignore:
       - 'package.json'
       - 'package-lock.json'
@@ -55,10 +55,12 @@ jobs:
         
     - name: Push changes
       run: |
-        git push origin main --follow-tags
+        git push origin ${{ github.ref_name }} --follow-tags
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
+      # Only create releases from main branch
+      if: github.ref_name == 'main'
       with:
         tag_name: "v${{ steps.new_version.outputs.version }}"
         name: "Release v${{ steps.new_version.outputs.version }}"
