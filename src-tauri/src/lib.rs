@@ -37,7 +37,8 @@ fn get_notes_path() -> Result<PathBuf, String> {
     Ok(notes)
 }
 
-// config directory
+// config directory - currently unused but available for future expansion
+#[allow(dead_code)]
 fn get_config_path() -> Result<PathBuf, String> {
     let vault_root = get_vault_root()?;
     let config_path = vault_root.join("config");
@@ -171,6 +172,44 @@ fn delete_note(filename: String) -> Result<(), String> {
     Ok(())
 }
 
+// config commands
+#[tauri::command]
+fn read_config() -> Result<String, String> {
+    let vault_root = get_vault_root()?;
+    let config_file = vault_root.join("config.cfg");
+    
+    if !config_file.exists() {
+        let default_config = r#"{
+  "theme": "system",
+  "editor": {
+    "fontFamily": "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, 'DejaVu Sans Mono', monospace",
+    "fontSize": 14,
+    "lineHeight": 1.75
+  },
+  "preview": {
+    "fontFamily": "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif",
+    "fontSize": 16,
+    "lineHeight": 1.6
+  }
+}"#;
+        return Ok(default_config.to_string());
+    }
+    
+    fs::read_to_string(&config_file)
+        .map_err(|e| format!("failed to read config file: {}", e))
+}
+
+#[tauri::command]
+fn save_config(config: String) -> Result<(), String> {
+    let vault_root = get_vault_root()?;
+    let config_file = vault_root.join("config.cfg");
+    
+    fs::write(&config_file, &config)
+        .map_err(|e| format!("failed to write config file: {}", e))?;
+    
+    Ok(())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -185,7 +224,9 @@ pub fn run() {
             read_note,
             save_note,
             rename_note,
-            delete_note
+            delete_note,
+            read_config,
+            save_config
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -1,28 +1,28 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Checkbox } from "@heroui/react";
 import { useState } from "react";
-import type { DeleteConfirmModalProps } from "../../types/ui";
+import type { DeleteConfirmModalProps } from "../../types";
 
 export default function DeleteConfirmModal({
   isOpen,
   onClose,
   fileName,
-  onConfirmDelete
+  onConfirm
 }: DeleteConfirmModalProps) {
-  const [confirmChecked, setConfirmChecked] = useState(false);
+  const [checked, setChecked] = useState(false);
 
   const handleConfirm = () => {
-    onConfirmDelete();
-    setConfirmChecked(false);
+    onConfirm();
+    setChecked(false);
     onClose();
   };
 
-  const handleClose = () => {
-    setConfirmChecked(false);
+  const close = () => {
+    setChecked(false);
     onClose();
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} radius="none">
+    <Modal isOpen={isOpen} onClose={close} radius="none">
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">
           confirm delete
@@ -31,8 +31,8 @@ export default function DeleteConfirmModal({
           <p>are you sure you want to delete <strong>"{fileName.replace('.md', '')}"</strong>?</p>
           <p className="text-small text-danger">this action cannot be undone.</p>
           <Checkbox 
-            isSelected={confirmChecked}
-            onValueChange={setConfirmChecked}
+            isSelected={checked}
+            onValueChange={setChecked}
             className="mt-2"
             radius="none"
             color="danger"
@@ -43,7 +43,7 @@ export default function DeleteConfirmModal({
         <ModalFooter>
           <Button 
             variant="light" 
-            onPress={handleClose}
+            onPress={close}
             radius="none"
           >
             cancel
@@ -51,7 +51,7 @@ export default function DeleteConfirmModal({
           <Button 
             color="danger" 
             onPress={handleConfirm}
-            isDisabled={!confirmChecked}
+            isDisabled={!checked}
             radius="none"
           >
             delete forever

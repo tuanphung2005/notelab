@@ -1,12 +1,10 @@
 export type SidebarKey = "notes" | "settings";
 
-// file
 export interface FileInfo {
   name: string;
   path: string;
 }
 
-// component
 export interface SidebarProps {
   activeKey: SidebarKey | string;
   onChange: (key: SidebarKey | string) => void;
@@ -53,15 +51,22 @@ export interface MarkdownPreviewProps {
 }
 
 export interface StatusBarProps {
-  sidebarStatus?: string;
-  notesStatus?: string;
-  editorWordCount?: number;
-  editorLineCount?: number;
+  sidebar?: string;
+  notes?: string;
+  wordCount?: number;
+  lineCount?: number;
 }
 
 export interface DeleteConfirmModalProps {
   isOpen: boolean;
   onClose: () => void;
   fileName: string;
-  onConfirmDelete: () => void;
+  onConfirm: () => void;
+}
+
+export interface RenamePopoverProps {
+  fileName: string;
+  onRename: (oldName: string, newName: string) => void;
+  onDelete: (fileName: string) => void;
+  triggerComponent?: React.ReactNode;
 }
