@@ -1,6 +1,3 @@
-/**
- * Settings component interfaces
- */
 import type { AppConfig, EditorConfig, PreviewConfig } from './config';
 
 export interface ThemeSettingsProps {

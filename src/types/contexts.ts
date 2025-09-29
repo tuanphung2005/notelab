@@ -1,6 +1,3 @@
-/**
- * Context interfaces for React contexts
- */
 import { ReactNode } from 'react';
 import type { AppConfig } from './config';
 

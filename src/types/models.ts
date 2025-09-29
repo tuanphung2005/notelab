@@ -1,7 +1,3 @@
-/**
- * Data model interfaces for the application
- */
-
 export type NoteId = string;
 
 export type Note = {

@@ -1,7 +1,3 @@
-/**
- * Component prop interfaces for UI components
- */
-
 export type SidebarKey = "notes" | "settings";
 
 export interface FileInfo {

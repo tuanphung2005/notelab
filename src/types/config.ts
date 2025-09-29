@@ -1,7 +1,3 @@
-/**
- * Configuration interfaces for the application
- */
-
 export interface AppConfig {
   theme: "light" | "dark" | "system";
   editor: EditorConfig;
