@@ -53,17 +53,17 @@ export interface MarkdownPreviewProps {
 }
 
 export interface StatusBarProps {
-  sidebarStatus?: string;
-  notesStatus?: string;
-  editorWordCount?: number;
-  editorLineCount?: number;
+  sidebar?: string;
+  notes?: string;
+  wordCount?: number;
+  lineCount?: number;
 }
 
 export interface DeleteConfirmModalProps {
   isOpen: boolean;
   onClose: () => void;
   fileName: string;
-  onConfirmDelete: () => void;
+  onConfirm: () => void;
 }
 
 export interface RenamePopoverProps {

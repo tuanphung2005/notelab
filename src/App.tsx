@@ -40,7 +40,7 @@ function App() {
 
   // new vault
   useEffect(() => {
-    const initializeApp = async () => {
+    const init = async () => {
       try {
         const path = await vaultService.getVaultInfo();
         setVaultPath(path);
@@ -50,7 +50,7 @@ function App() {
       }
     };
     
-    initializeApp();
+    init();
   }, []);
 
   const loadVaultFiles = async () => {
@@ -68,9 +68,9 @@ function App() {
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const filename = `New Note ${timestamp}.md`;
 
-      const validationError = validateFilename(filename);
-      if (validationError) {
-        showError(`cannot create note: ${validationError}`);
+      const error = validateFilename(filename);
+      if (error) {
+        showError(`cannot create note: ${error}`);
         return;
       }
       
@@ -104,12 +104,12 @@ function App() {
     }
   }, [currentFile]);
 
-  const handleRenameNote = async (oldFilename: string, newFilename: string) => {
+  const handleRename = async (oldFilename: string, newFilename: string) => {
 
     const newName = newFilename.endsWith('.md') ? newFilename : `${newFilename}.md`;
-    const validationError = validateFilename(newName);
-    if (validationError) {
-      showError(validationError);
+    const error = validateFilename(newName);
+    if (error) {
+      showError(error);
       return;
     }
 
@@ -125,7 +125,7 @@ function App() {
     }
   };
 
-  const handleDeleteNote = async (filename: string) => {
+  const handleDelete = async (filename: string) => {
     try {
       await vaultService.deleteNote(filename);
       
@@ -160,8 +160,8 @@ function App() {
           vaultPath={vaultPath}
           vaultFiles={vaultFiles}
           onOpenFile={openFile}
-          onRenameFile={handleRenameNote}
-          onDeleteFile={handleDeleteNote}
+          onRenameFile={handleRename}
+          onDeleteFile={handleDelete}
           canCreate={true}
           currentFile={currentFile}
         />
@@ -188,13 +188,13 @@ function App() {
       </div>
       
       <StatusBar
-        sidebarStatus={sidebarStats.status}
-        notesStatus={notesStats.selectedNoteName ? 
+        sidebar={sidebarStats.status}
+        notes={notesStats.selectedNoteName ? 
           `${notesStats.selectedNoteName} (${notesStats.totalNotes} notes)` : 
           `${notesStats.totalNotes} notes`
         }
-        editorWordCount={editorStats.wordCount}
-        editorLineCount={editorStats.lineCount}
+        wordCount={editorStats.wordCount}
+        lineCount={editorStats.lineCount}
       />
     </div>
   );

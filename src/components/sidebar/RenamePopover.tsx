@@ -13,12 +13,12 @@ export default function RenamePopover({
   const [newFileName, setNewFileName] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleStartRename = () => {
+  const startRename = () => {
     setIsRenaming(true);
     setNewFileName(fileName.replace('.md', ''));
   };
 
-  const handleFinishRename = () => {
+  const finishRename = () => {
     if (newFileName.trim()) {
       onRename(fileName, newFileName.trim());
     }
@@ -27,12 +27,12 @@ export default function RenamePopover({
     setIsOpen(false);
   };
 
-  const handleCancelRename = () => {
+  const cancelRename = () => {
     setIsRenaming(false);
     setNewFileName("");
   };
 
-  const handlePopoverChange = (open: boolean) => {
+  const onPopoverChange = (open: boolean) => {
     setIsOpen(open);
     if (!open && isRenaming) {
       setIsRenaming(false);
@@ -57,7 +57,7 @@ export default function RenamePopover({
   );
 
   return (
-    <Popover isOpen={isOpen} onOpenChange={handlePopoverChange}>
+    <Popover isOpen={isOpen} onOpenChange={onPopoverChange} radius="none">
       <PopoverTrigger>
         {triggerComponent || defaultTrigger}
       </PopoverTrigger>
@@ -67,7 +67,7 @@ export default function RenamePopover({
             <Button
               size="sm"
               variant="light"
-              onPress={handleStartRename}
+              onPress={startRename}
               className="justify-start"
             >
               <Pencil size={14} />
@@ -91,9 +91,9 @@ export default function RenamePopover({
               onChange={(e) => setNewFileName(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
-                  handleFinishRename();
+                  finishRename();
                 } else if (e.key === 'Escape') {
-                  handleCancelRename();
+                  cancelRename();
                 }
               }}
               placeholder="enter new name"
@@ -102,7 +102,7 @@ export default function RenamePopover({
             <Button
               size="sm"
               color="primary"
-              onPress={handleFinishRename}
+              onPress={finishRename}
               isDisabled={!newFileName.trim()}
               isIconOnly
             >

@@ -93,7 +93,7 @@ export default function NotesTab({
           isOpen={!!deleteModal}
           onClose={() => setDeleteModal(null)}
           fileName={deleteModal}
-          onConfirmDelete={handleDeleteConfirm}
+          onConfirm={handleDeleteConfirm}
         />
       )}
     </div>
