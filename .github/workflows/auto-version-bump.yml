@@ -1,4 +1,4 @@
-name: Auto Version Bump
+name: release
 
 on:
   push:
@@ -75,9 +75,22 @@ jobs:
       id: current_version
       run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
 
-    - name: Bump patch version
+    - name: Bump version based on branch
       run: |
-        npm version patch --no-git-tag-version
+        if [[ "${{ github.ref_name }}" == "main" ]]; then
+          # Main branch: bump patch version (1.0.0 -> 1.0.1)
+          npm version patch --no-git-tag-version
+        else
+          # Dev branch: add/increment pre-release version
+          current_version=$(node -p "require('./package.json').version")
+          if [[ $current_version =~ -dev\.[0-9]+$ ]]; then
+            # Already has dev suffix, increment it (1.0.1-dev.1 -> 1.0.1-dev.2)
+            npm version prerelease --preid=dev --no-git-tag-version
+          else
+            # No dev suffix, add it (1.0.1 -> 1.0.1-dev.1)
+            npm version prerelease --preid=dev --no-git-tag-version
+          fi
+        fi
     
     - name: Install dependencies
       run: bun install --frozen-lockfile
@@ -110,17 +123,20 @@ jobs:
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
-      # Only create releases from main branch
-      if: github.ref_name == 'main'
       with:
         tag_name: "v${{ steps.new_version.outputs.version }}"
         name: "Release v${{ steps.new_version.outputs.version }}"
         body: |
           🚀 Auto-generated release for version ${{ steps.new_version.outputs.version }}
           
+          **Branch:** ${{ github.ref_name }}
+          **Type:** ${{ github.ref_name == 'main' && 'Stable Release' || 'Development Pre-release' }}
+          
           **Changes:**
-          - Auto-bumped patch version from v${{ steps.current_version.outputs.version }} to v${{ steps.new_version.outputs.version }}
+          - Auto-bumped version from v${{ steps.current_version.outputs.version }} to v${{ steps.new_version.outputs.version }}
         draft: false
-        prerelease: false
+        prerelease: ${{ github.ref_name != 'main' }}
+        files: |
+          src-tauri/target/release/bundle/**/*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
