@@ -93,7 +93,7 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
     loadConfig();
   }, []);
 
-  // system theme change listener test
+  // system theme change listener testtest
   useEffect(() => {
     if (!config || config.theme !== 'system') return;
 
