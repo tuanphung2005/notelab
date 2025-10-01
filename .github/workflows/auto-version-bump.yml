@@ -7,6 +7,16 @@ on:
       - 'package.json'
       - 'package-lock.json'
       - '.github/**'
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to release from'
+        required: false
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - main
 
 permissions:
   contents: write
