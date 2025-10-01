@@ -1,5 +1,4 @@
 import { Chip } from "@heroui/react";
-import ThemeToggle from "../theme/ThemeToggle";
 import type { SidebarHeaderProps } from "../../types";
 import packageInfo from "../../../package.json";
 
@@ -16,7 +15,6 @@ export default function SidebarHeader({ vaultPath }: SidebarHeaderProps) {
         </div>
         
       </div>
-      <ThemeToggle />
     </div>
   );
 }
