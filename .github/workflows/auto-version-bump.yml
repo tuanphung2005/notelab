@@ -27,7 +27,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'npm'
     
     - name: Setup Bun
       uses: oven-sh/setup-bun@v1
@@ -37,7 +36,9 @@ jobs:
     - name: Cache Bun dependencies
       uses: actions/cache@v3
       with:
-        path: ~/.bun
+        path: |
+          ~/.bun/install/cache
+          node_modules
         key: ${{ runner.os }}-bun-${{ hashFiles('bun.lockb') }}
         restore-keys: |
           ${{ runner.os }}-bun-
