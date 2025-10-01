@@ -51,6 +51,7 @@ export default function RenamePopover({
       variant="light"
       isIconOnly
       className="ml-2 opacity-70 hover:opacity-100"
+      radius="none"
     >
       <Cog size={20} />
     </Button>
@@ -69,6 +70,7 @@ export default function RenamePopover({
               variant="light"
               onPress={startRename}
               className="justify-start"
+              radius="none"
             >
               <Pencil size={14} />
               rename
@@ -78,6 +80,7 @@ export default function RenamePopover({
               variant="light"
               onPress={handleDeleteClick}
               className="justify-start text-danger"
+              radius="none"
             >
               <Trash2 size={14} />
               delete
@@ -98,6 +101,7 @@ export default function RenamePopover({
               }}
               placeholder="enter new name"
               autoFocus
+              radius="none"
             />
             <Button
               size="sm"
@@ -105,6 +109,7 @@ export default function RenamePopover({
               onPress={finishRename}
               isDisabled={!newFileName.trim()}
               isIconOnly
+              radius="none"
             >
               <Check size={16} />
             </Button>

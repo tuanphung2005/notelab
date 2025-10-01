@@ -2,7 +2,7 @@ import { Button, Input, Divider, Tabs, Tab } from "@heroui/react";
 import { useState } from "react";
 import type { NotesTabProps } from "../../../types";
 import DeleteConfirmModal from "../DeleteConfirmModal";
-import RenamePopover from "../RenamePopover";
+import SettingsPopover from "../SettingsPopover";
 
 export default function NotesTab({
   onNewNote,
@@ -50,8 +50,9 @@ export default function NotesTab({
             selectedKey={currentFile}
             onSelectionChange={(key) => onOpenFile?.(String(key))}
             isVertical={true}
-            variant="underlined"
+            variant="light"
             className="w-full"
+            radius="none"
             classNames={{
               tabList: "w-full",
               tabContent: "w-full flex py-2"
@@ -66,7 +67,7 @@ export default function NotesTab({
                       {file.name.replace('.md', '')}
                     </span>
                     {currentFile === file.name && (
-                      <RenamePopover
+                      <SettingsPopover
                         fileName={file.name}
                         onRename={(oldName, newName) => onRenameFile?.(oldName, newName)}
                         onDelete={handleDeleteClick}
