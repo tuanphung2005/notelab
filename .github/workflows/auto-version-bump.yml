@@ -138,6 +138,7 @@ jobs:
         
     - name: Push changes
       run: |
+        git pull origin ${{ github.ref_name }} --rebase
         git push origin ${{ github.ref_name }} --follow-tags
 
     - name: Create Release
