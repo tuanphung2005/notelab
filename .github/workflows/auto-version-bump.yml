@@ -97,19 +97,16 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: linux-artifacts
-        path: |
-          src-tauri/target/release/bundle/deb/*.deb
-          src-tauri/target/release/bundle/rpm/*.rpm
-          src-tauri/target/release/bundle/appimage/*.AppImage
+        path: src-tauri/target/release/bundle/
+        if-no-files-found: error
 
     - name: Upload artifacts (Windows)
       if: matrix.platform == 'windows-latest'
       uses: actions/upload-artifact@v4
       with:
         name: windows-artifacts
-        path: |
-          src-tauri/target/release/bundle/nsis/*.exe
-          src-tauri/target/release/bundle/msi/*.msi
+        path: src-tauri/target/release/bundle/
+        if-no-files-found: error
 
   release:
     needs: build
@@ -175,13 +172,19 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: linux-artifacts
-        path: ./artifacts/linux/
+        path: ./linux-bundle/
 
     - name: Download Windows artifacts
       uses: actions/download-artifact@v4
       with:
         name: windows-artifacts
-        path: ./artifacts/windows/
+        path: ./windows-bundle/
+
+    - name: List downloaded artifacts (debug)
+      run: |
+        echo "=== Artifact directory structure ==="
+        find ./linux-bundle -type f -ls 2>/dev/null || echo "No linux artifacts found"
+        find ./windows-bundle -type f -ls 2>/dev/null || echo "No windows artifacts found"
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
@@ -199,7 +202,10 @@ jobs:
         draft: false
         prerelease: ${{ github.ref_name != 'main' }}
         files: |
-          ./artifacts/linux/*
-          ./artifacts/windows/*
+          ./linux-bundle/deb/*.deb
+          ./linux-bundle/rpm/*.rpm
+          ./linux-bundle/appimage/*.AppImage
+          ./windows-bundle/nsis/*.exe
+          ./windows-bundle/msi/*.msi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
