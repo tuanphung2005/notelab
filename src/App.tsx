@@ -8,7 +8,7 @@ import MarkdownPreview from "./components/preview/MarkdownPreview";
 import { StatusBar } from "./components/StatusBar";
 import type { SidebarKey, FileInfo } from "./types";
 import { validateFilename } from "./utils/fileValidation";
-import { showError } from "./utils/notifications";
+import { showError, showSuccess } from "./utils/notifications";
 import { vaultService } from "./services/vaultService";
 import { useEditorStats, useNotesStats, useSidebarStats } from "./hooks/useStatusStats";
 
@@ -129,9 +129,9 @@ function App() {
     try {
       await vaultService.deleteNote(filename);
       
-      // only able to delete currently selected file so clear it anyway
       setCurrentFile("");
       setMarkdown(startingText);
+      showSuccess("file deleted successfully");
       
       await loadVaultFiles();
     } catch (error) {
