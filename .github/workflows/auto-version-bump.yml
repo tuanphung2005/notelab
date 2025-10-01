@@ -27,11 +27,43 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
+        cache: 'npm'
     
     - name: Setup Bun
       uses: oven-sh/setup-bun@v1
       with:
         bun-version: 'latest'
+
+    - name: Cache Bun dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.bun
+        key: ${{ runner.os }}-bun-${{ hashFiles('bun.lockb') }}
+        restore-keys: |
+          ${{ runner.os }}-bun-
+
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Rust cache
+      uses: swatinem/rust-cache@v2
+      with:
+        workspaces: './src-tauri -> target'
+
+    - name: Install Linux dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          libwebkit2gtk-4.0-dev \
+          libwebkit2gtk-4.1-dev \
+          libappindicator3-dev \
+          librsvg2-dev \
+          patchelf \
+          libgtk-3-dev \
+          libglib2.0-dev \
+          libcairo-gobject2 \
+          libgtk-3-0 \
+          libgdk3.0-cil-dev
         
     - name: Configure git
       run: |
