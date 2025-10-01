@@ -23,7 +23,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  bump-version:
+  release:
     runs-on: ubuntu-latest
     
     steps:
