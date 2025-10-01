@@ -41,7 +41,7 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
   const loadConfig = async () => {
     try {
       const loadedConfig = await configService.loadConfig();
-      
+
       setConfig(loadedConfig);
 
       applyTheme(loadedConfig.theme);
@@ -93,7 +93,7 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
     loadConfig();
   }, []);
 
-  // system theme change listener
+  // system theme change listener testttest
   useEffect(() => {
     if (!config || config.theme !== 'system') return;
 
