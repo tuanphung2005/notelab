@@ -9,3 +9,12 @@ export const showError = (message: string) => {
     radius:"none"
   });
 };
+
+export const showSuccess = (message: string) => {
+  addToast({
+    title: "Success",
+    description: message,
+    color:"success",
+    radius:"none"
+  });
+}
