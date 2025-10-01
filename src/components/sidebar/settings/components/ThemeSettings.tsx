@@ -2,32 +2,9 @@ import { Button, Card, CardBody, CardHeader } from "@heroui/react";
 import { Sun, Moon, Monitor } from "lucide-react";
 import { AppConfig, ThemeSettingsProps } from "../../../../types";
 
-const applyTheme = (theme: AppConfig['theme']) => {
-  const root = document.documentElement;
-  
-  if (theme === 'system') {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (prefersDark) {
-      root.classList.remove('light');
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-      root.classList.add('light');
-    }
-  } else {
-    root.classList.remove('light', 'dark');
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.add('light');
-    }
-  }
-};
-
 export default function ThemeSettings({ currentTheme, onThemeChange }: ThemeSettingsProps) {
   const handleThemeChange = (theme: AppConfig['theme']) => {
     onThemeChange(theme);
-    applyTheme(theme);
   };
 
   return (

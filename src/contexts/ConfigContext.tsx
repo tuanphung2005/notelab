@@ -4,6 +4,28 @@ import { configService } from '../services/configService';
 
 const ConfigContext = createContext<ConfigContextType | undefined>(undefined);
 
+const applyTheme = (theme: AppConfig['theme']) => {
+  const root = document.documentElement;
+  
+  if (theme === 'system') {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (prefersDark) {
+      root.classList.remove('light');
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+      root.classList.add('light');
+    }
+  } else {
+    root.classList.remove('light', 'dark');
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.add('light');
+    }
+  }
+};
+
 export const useConfig = () => {
   const context = useContext(ConfigContext);
   if (context === undefined) {
@@ -19,7 +41,10 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
   const loadConfig = async () => {
     try {
       const loadedConfig = await configService.loadConfig();
+      
       setConfig(loadedConfig);
+
+      applyTheme(loadedConfig.theme);
       return loadedConfig;
     } catch (error) {
       console.error('Failed to load config:', error);
@@ -44,9 +69,12 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
       font: { ...config.font, ...updates.font },
     };
 
-
     setConfig(newConfig);
-
+    
+    // theme change
+    if (updates.theme) {
+      applyTheme(updates.theme);
+    }
 
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
@@ -64,6 +92,21 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
   useEffect(() => {
     loadConfig();
   }, []);
+
+  // system theme change listener
+  useEffect(() => {
+    if (!config || config.theme !== 'system') return;
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = () => {
+      if (config.theme === 'system') {
+        applyTheme('system');
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, [config?.theme]);
 
   // cleanup
   useEffect(() => {
