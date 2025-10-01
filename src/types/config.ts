@@ -9,19 +9,6 @@ export interface FontConfig {
   lineHeight: number;
 }
 
-// Legacy interfaces for compatibility during migration
-export interface EditorConfig {
-  fontFamily: string;
-  fontSize: number;
-  lineHeight: number;
-}
-
-export interface PreviewConfig {
-  fontFamily: string;
-  fontSize: number;
-  lineHeight: number;
-}
-
 export const DEFAULT_CONFIG: AppConfig = {
   theme: "system",
   font: {
