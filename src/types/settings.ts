@@ -1,4 +1,4 @@
-import type { AppConfig, EditorConfig, PreviewConfig } from './config';
+import type { AppConfig, FontConfig } from './config';
 
 export interface ThemeSettingsProps {
   currentTheme: AppConfig['theme'];
@@ -7,8 +7,6 @@ export interface ThemeSettingsProps {
 
 export interface FontSettingsProps {
   title: string;
-  config: EditorConfig | PreviewConfig;
-  onConfigChange: (updates: Partial<EditorConfig | PreviewConfig>) => void;
-  fontSizeRange: { min: number; max: number };
-  defaultFont: string;
+  config: FontConfig;
+  onConfigChange: (updates: Partial<FontConfig>) => void;
 }

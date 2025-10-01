@@ -24,10 +24,8 @@ const FONT_FAMILIES = [
 
 export default function FontSettings({ 
   title, 
-  config, 
-  onConfigChange, 
-  fontSizeRange,
-  defaultFont 
+  config,
+  onConfigChange
 }: FontSettingsProps) {
   return (
     <Card radius="none" shadow="sm">
@@ -39,7 +37,7 @@ export default function FontSettings({
           <label className="text-xs text-foreground-600 mb-2 block">font family</label>
           <Select
             size="sm"
-            selectedKeys={[FONT_FAMILIES.find(f => f.value === config.fontFamily)?.key || defaultFont]}
+            selectedKeys={[FONT_FAMILIES.find(f => f.value === config.fontFamily)?.key || "system-ui"]}
             onSelectionChange={(keys) => {
               const key = Array.from(keys)[0] as string;
               const family = FONT_FAMILIES.find(f => f.key === key);
@@ -56,7 +54,7 @@ export default function FontSettings({
             ))}
           </Select>
         </div>
-        
+
         <div>
           <label className="text-xs text-foreground-600 mb-2 block">
             font size: {config.fontSize}px
@@ -64,14 +62,15 @@ export default function FontSettings({
           <Slider
             size="sm"
             step={1}
-            minValue={fontSizeRange.min}
-            maxValue={fontSizeRange.max}
+            minValue={12}
+            maxValue={24}
             value={config.fontSize}
             onChange={(value) => onConfigChange({ fontSize: value as number })}
-            className="w-full"
+            className="max-w-md"
+            radius="none"
           />
         </div>
-        
+
         <div>
           <label className="text-xs text-foreground-600 mb-2 block">
             line height: {config.lineHeight}
@@ -80,10 +79,11 @@ export default function FontSettings({
             size="sm"
             step={0.1}
             minValue={1.0}
-            maxValue={2.0}
+            maxValue={2.5}
             value={config.lineHeight}
             onChange={(value) => onConfigChange({ lineHeight: value as number })}
-            className="w-full"
+            className="max-w-md"
+            radius="none"
           />
         </div>
       </CardBody>

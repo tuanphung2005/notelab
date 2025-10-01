@@ -98,10 +98,10 @@ export default function LineNumberedEditor({ value, onChange }: EditorProps) {
         aria-hidden
         className="absolute left-0 top-0 w-12 h-full overflow-hidden select-none text-right pr-2 text-foreground-500 bg-content2 border-r border-default-200"
         style={config ? {
-          paddingTop: '12px', // Match textarea's padding
-          fontSize: `${config.editor.fontSize}px`,
-          lineHeight: config.editor.lineHeight,
-          fontFamily: config.editor.fontFamily,
+          paddingTop: '12px',
+          fontSize: `${config.font.fontSize}px`,
+          lineHeight: config.font.lineHeight,
+          fontFamily: config.font.fontFamily,
         } : {
           paddingTop: '12px',
           fontSize: "14px",
@@ -126,9 +126,9 @@ export default function LineNumberedEditor({ value, onChange }: EditorProps) {
         onChange={(e) => onChange(e.target.value)}
         className="absolute inset-0 pl-14 p-3 resize-none outline-none bg-transparent text-foreground"
         style={config ? {
-          fontFamily: config.editor.fontFamily,
-          fontSize: `${config.editor.fontSize}px`,
-          lineHeight: config.editor.lineHeight,
+          fontFamily: config.font.fontFamily,
+          fontSize: `${config.font.fontSize}px`,
+          lineHeight: config.font.lineHeight,
         } : {
           fontFamily: "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, 'DejaVu Sans Mono', monospace",
           fontSize: "14px",

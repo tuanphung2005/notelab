@@ -13,9 +13,9 @@ export default function MarkdownPreview({ value }: MarkdownPreviewProps) {
       <div 
         className="preview prose dark:prose-invert max-w-none overflow-x-auto prose-headings:font-semibold prose-headings:text-foreground prose-table:border prose-td:p-2 prose-table:w-fit text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-foreground prose-blockquote:text-foreground prose-th:text-foreground prose-td:text-foreground"
         style={config ? {
-          fontFamily: config.preview.fontFamily,
-          fontSize: `${config.preview.fontSize}px`,
-          lineHeight: config.preview.lineHeight,
+          fontFamily: config.font.fontFamily,
+          fontSize: `${config.font.fontSize}px`,
+          lineHeight: config.font.lineHeight,
         } : {
           fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif",
           fontSize: "16px",

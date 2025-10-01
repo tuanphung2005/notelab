@@ -11,8 +11,7 @@ export const configService = {
       return {
         ...DEFAULT_CONFIG,
         ...config,
-        editor: { ...DEFAULT_CONFIG.editor, ...config.editor },
-        preview: { ...DEFAULT_CONFIG.preview, ...config.preview },
+        font: { ...DEFAULT_CONFIG.font, ...config.font },
       };
     } catch (error) {
       console.error('Failed to load config:', error);
@@ -35,8 +34,7 @@ export const configService = {
     const newConfig = {
       ...currentConfig,
       ...updates,
-      editor: { ...currentConfig.editor, ...updates.editor },
-      preview: { ...currentConfig.preview, ...updates.preview },
+      font: { ...currentConfig.font, ...updates.font },
     };
     await this.saveConfig(newConfig);
     return newConfig;

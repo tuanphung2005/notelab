@@ -1,9 +1,15 @@
 export interface AppConfig {
   theme: "light" | "dark" | "system";
-  editor: EditorConfig;
-  preview: PreviewConfig;
+  font: FontConfig;
 }
 
+export interface FontConfig {
+  fontFamily: string;
+  fontSize: number;
+  lineHeight: number;
+}
+
+// Legacy interfaces for compatibility during migration
 export interface EditorConfig {
   fontFamily: string;
   fontSize: number;
@@ -18,12 +24,7 @@ export interface PreviewConfig {
 
 export const DEFAULT_CONFIG: AppConfig = {
   theme: "system",
-  editor: {
-    fontFamily: "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, 'DejaVu Sans Mono', monospace",
-    fontSize: 14,
-    lineHeight: 1.75,
-  },
-  preview: {
+  font: {
     fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif",
     fontSize: 16,
     lineHeight: 1.6,

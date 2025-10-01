@@ -16,19 +16,9 @@ export default function SettingsTab() {
       />
       
       <FontSettings
-        title="editor"
-        config={config.editor}
-        onConfigChange={(updates) => updateConfig({ editor: { ...config.editor, ...updates } })}
-        fontSizeRange={{ min: 10, max: 20 }}
-        defaultFont="monospace"
-      />
-      
-      <FontSettings
-        title="preview"
-        config={config.preview}
-        onConfigChange={(updates) => updateConfig({ preview: { ...config.preview, ...updates } })}
-        fontSizeRange={{ min: 12, max: 24 }}
-        defaultFont="sans-serif"
+        title="font settings"
+        config={config.font}
+        onConfigChange={(updates) => updateConfig({ font: { ...config.font, ...updates } })}
       />
     </div>
   );

@@ -181,12 +181,7 @@ fn read_config() -> Result<String, String> {
     if !config_file.exists() {
         let default_config = r#"{
   "theme": "system",
-  "editor": {
-    "fontFamily": "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, 'DejaVu Sans Mono', monospace",
-    "fontSize": 14,
-    "lineHeight": 1.75
-  },
-  "preview": {
+  "font": {
     "fontFamily": "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif",
     "fontSize": 16,
     "lineHeight": 1.6

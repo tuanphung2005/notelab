@@ -41,8 +41,7 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
     const newConfig = {
       ...config,
       ...updates,
-      editor: { ...config.editor, ...updates.editor },
-      preview: { ...config.preview, ...updates.preview },
+      font: { ...config.font, ...updates.font },
     };
 
 
