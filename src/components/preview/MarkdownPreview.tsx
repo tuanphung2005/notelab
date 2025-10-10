@@ -9,9 +9,9 @@ export default function MarkdownPreview({ value }: MarkdownPreviewProps) {
   const { config } = useConfig();
 
   return (
-    <div className="overflow-auto p-6">
+    <div className="h-full overflow-y-auto p-6">
       <div 
-        className="preview prose dark:prose-invert max-w-none overflow-x-auto prose-headings:font-semibold prose-headings:text-foreground prose-table:border prose-td:p-2 prose-table:w-fit text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-foreground prose-blockquote:text-foreground prose-th:text-foreground prose-td:text-foreground"
+        className="preview prose dark:prose-invert max-w-none prose-headings:font-semibold prose-headings:text-foreground prose-table:border prose-td:p-2 prose-table:w-fit text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-code:text-foreground prose-blockquote:text-foreground prose-th:text-foreground prose-td:text-foreground"
         style={config ? {
           fontFamily: config.font.fontFamily,
           fontSize: `${config.font.fontSize}px`,

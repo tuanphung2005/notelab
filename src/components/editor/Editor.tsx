@@ -92,7 +92,7 @@ export default function LineNumberedEditor({ value, onChange }: EditorProps) {
   }, [visualLines]);
 
   return (
-    <div className="relative h-full">
+    <div className="relative h-full overflow-hidden">
       <div
         ref={gutterRef}
         aria-hidden
@@ -124,7 +124,7 @@ export default function LineNumberedEditor({ value, onChange }: EditorProps) {
         ref={editorRef}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="absolute inset-0 pl-14 p-3 resize-none outline-none bg-transparent text-foreground"
+        className="absolute inset-0 pl-14 p-3 resize-none outline-none bg-transparent text-foreground overflow-y-auto"
         style={config ? {
           fontFamily: config.font.fontFamily,
           fontSize: `${config.font.fontSize}px`,

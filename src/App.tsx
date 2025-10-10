@@ -151,8 +151,8 @@ function App() {
   }, [markdown, currentFile, saveCurrentFile]);
 
   return (
-    <div className="h-screen grid grid-rows-[1fr_auto]">
-      <div className="grid grid-cols-[260px_1fr] overflow-hidden">
+    <div className="h-screen grid grid-rows-[1fr_auto] overflow-hidden">
+      <div className="grid grid-cols-[260px_1fr] overflow-hidden h-full">
         <Sidebar 
           activeKey={activeKey} 
           onChange={setActiveKey} 
@@ -166,22 +166,26 @@ function App() {
           currentFile={currentFile}
         />
 
-        <main className="h-full grid grid-cols-2">
-          <section className="h-full border-r border-default-200 bg-content1">
-            <div className="h-full grid grid-rows-[auto_1fr]">
+        <main className="h-full grid grid-cols-2 overflow-hidden">
+          <section className="h-full border-r border-default-200 bg-content1 overflow-hidden">
+            <div className="h-full grid grid-rows-[auto_1fr] overflow-hidden">
               <div className="flex items-center justify-between p-3 border-b border-default-200">
                 <span className="font-medium">{currentFile ? `editor — ${currentFile}` : "editor"}</span>
               </div>
-              <LineNumberedEditor value={markdown} onChange={setMarkdown} />
+              <div className="h-full overflow-hidden">
+                <LineNumberedEditor value={markdown} onChange={setMarkdown} />
+              </div>
             </div>
           </section>
 
-          <section className="h-full bg-content1">
-            <div className="h-full grid grid-rows-[auto_1fr]">
+          <section className="h-full bg-content1 overflow-hidden">
+            <div className="h-full grid grid-rows-[auto_1fr] overflow-hidden">
               <div className="flex items-center justify-between p-3 border-b border-default-200">
                 <span className="font-medium">preview</span>
               </div>
-              <MarkdownPreview value={markdown} />
+              <div className="h-full overflow-hidden">
+                <MarkdownPreview value={markdown} />
+              </div>
             </div>
           </section>
         </main>

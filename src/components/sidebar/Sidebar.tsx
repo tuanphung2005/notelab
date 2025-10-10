@@ -17,7 +17,7 @@ export default function Sidebar({
   currentFile
 }: SidebarProps) {
   return (
-    <aside className="h-screen border-r border-default-200 p-3 overflow-y-auto bg-content1">
+    <aside className="h-full border-r border-default-200 p-3 overflow-y-auto bg-content1">
       <SidebarHeader vaultPath={vaultPath} />
       <Tabs
         selectedKey={activeKey}
