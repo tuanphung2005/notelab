@@ -32,6 +32,8 @@ jobs:
             args: ''
           - platform: 'windows-latest'
             args: ''
+          - platform: 'macos-latest'
+            args: '--target universal-apple-darwin'
 
     runs-on: ${{ matrix.platform }}
     
@@ -108,6 +110,14 @@ jobs:
         path: src-tauri/target/release/bundle/
         if-no-files-found: error
 
+    - name: Upload artifacts (macOS)
+      if: matrix.platform == 'macos-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: macos-artifacts
+        path: src-tauri/target/release/bundle/
+        if-no-files-found: error
+
   release:
     needs: build
     runs-on: ubuntu-latest
@@ -180,11 +190,18 @@ jobs:
         name: windows-artifacts
         path: ./windows-bundle/
 
+    - name: Download macOS artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: macos-artifacts
+        path: ./macos-bundle/
+
     - name: List downloaded artifacts (debug)
       run: |
         echo "=== Artifact directory structure ==="
         find ./linux-bundle -type f -ls 2>/dev/null || echo "No linux artifacts found"
         find ./windows-bundle -type f -ls 2>/dev/null || echo "No windows artifacts found"
+        find ./macos-bundle -type f -ls 2>/dev/null || echo "No macOS artifacts found"
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
@@ -207,5 +224,6 @@ jobs:
           ./linux-bundle/appimage/*.AppImage
           ./windows-bundle/nsis/*.exe
           ./windows-bundle/msi/*.msi
+          ./macos-bundle/dmg/*.dmg
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
