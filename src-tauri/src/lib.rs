@@ -185,7 +185,9 @@ fn read_config() -> Result<String, String> {
     "fontFamily": "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif",
     "fontSize": 16,
     "lineHeight": 1.6
-  }
+  },
+  "showPreview": true,
+  "showEditor": true
 }"#;
         return Ok(default_config.to_string());
     }

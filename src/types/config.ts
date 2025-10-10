@@ -1,6 +1,8 @@
 export interface AppConfig {
   theme: "light" | "dark" | "system";
   font: FontConfig;
+  showPreview: boolean;
+  showEditor: boolean;
 }
 
 export interface FontConfig {
@@ -16,4 +18,6 @@ export const DEFAULT_CONFIG: AppConfig = {
     fontSize: 16,
     lineHeight: 1.6,
   },
+  showPreview: true,
+  showEditor: true,
 };
