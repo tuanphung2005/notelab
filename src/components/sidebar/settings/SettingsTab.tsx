@@ -1,5 +1,5 @@
 import { useConfig } from "../../../contexts/ConfigContext";
-import { ThemeSettings, FontSettings } from "./components";
+import { ThemeSettings, FontSettings, ViewSettings } from "./components";
 
 export default function SettingsTab() {
   const { config, updateConfig } = useConfig();
@@ -13,6 +13,13 @@ export default function SettingsTab() {
       <ThemeSettings 
         currentTheme={config.theme}
         onThemeChange={(theme) => updateConfig({ theme })}
+      />
+      
+      <ViewSettings
+        showPreview={config.showPreview}
+        showEditor={config.showEditor}
+        onTogglePreview={(showPreview) => updateConfig({ showPreview })}
+        onToggleEditor={(showEditor) => updateConfig({ showEditor })}
       />
       
       <FontSettings
