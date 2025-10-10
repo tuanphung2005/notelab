@@ -167,25 +167,21 @@ function App() {
         />
 
         <main className="h-full grid grid-cols-2 overflow-hidden">
-          <section className="h-full border-r border-default-200 bg-content1 overflow-hidden">
-            <div className="h-full grid grid-rows-[auto_1fr] overflow-hidden">
-              <div className="flex items-center justify-between p-3 border-b border-default-200">
-                <span className="font-medium">{currentFile ? `editor — ${currentFile}` : "editor"}</span>
-              </div>
-              <div className="h-full overflow-hidden">
-                <LineNumberedEditor value={markdown} onChange={setMarkdown} />
-              </div>
+          <section className="h-full border-r border-default-200 bg-content1 overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between px-3 py-2 border-b border-default-200 bg-content2">
+              <span className="font-medium text-sm">{currentFile ? `${currentFile}` : "untitled"}</span>
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <LineNumberedEditor value={markdown} onChange={setMarkdown} />
             </div>
           </section>
 
-          <section className="h-full bg-content1 overflow-hidden">
-            <div className="h-full grid grid-rows-[auto_1fr] overflow-hidden">
-              <div className="flex items-center justify-between p-3 border-b border-default-200">
-                <span className="font-medium">preview</span>
-              </div>
-              <div className="h-full overflow-hidden">
-                <MarkdownPreview value={markdown} />
-              </div>
+          <section className="h-full bg-content1 overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between px-3 py-2 border-b border-default-200 bg-content2">
+              <span className="font-medium text-sm">preview</span>
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <MarkdownPreview value={markdown} />
             </div>
           </section>
         </main>

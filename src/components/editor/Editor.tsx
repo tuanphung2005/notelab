@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import type { EditorProps } from "../../types";
 import { useConfig } from "../../contexts/ConfigContext";
+import Toolbar from "./Toolbar";
 
 export default function LineNumberedEditor({ value, onChange }: EditorProps) {
   const editorRef = useRef<HTMLTextAreaElement | null>(null);
@@ -91,8 +92,35 @@ export default function LineNumberedEditor({ value, onChange }: EditorProps) {
     return () => editor.removeEventListener("scroll", sync);
   }, [visualLines]);
 
+  const handleInsert = useCallback((before: string, after: string = "") => {
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    const start = editor.selectionStart;
+    const end = editor.selectionEnd;
+    const selectedText = value.substring(start, end);
+    
+    const newText = value.substring(0, start) + before + selectedText + after + value.substring(end);
+    onChange(newText);
+
+    // Set cursor position after insert
+    setTimeout(() => {
+      if (selectedText) {
+        // If there was selected text, select the wrapped text
+        editor.selectionStart = start + before.length;
+        editor.selectionEnd = start + before.length + selectedText.length;
+      } else {
+        // If no selection, position cursor between before and after
+        editor.selectionStart = editor.selectionEnd = start + before.length;
+      }
+      editor.focus();
+    }, 0);
+  }, [value, onChange]);
+
   return (
-    <div className="relative h-full overflow-hidden">
+    <div className="h-full flex flex-col overflow-hidden">
+      <Toolbar onInsert={handleInsert} />
+      <div className="relative flex-1 overflow-hidden">
       <div
         ref={gutterRef}
         aria-hidden
@@ -136,6 +164,7 @@ export default function LineNumberedEditor({ value, onChange }: EditorProps) {
         }}
         spellCheck={false}
       />
+      </div>
     </div>
   );
 }
