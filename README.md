@@ -1,6 +1,9 @@
-# Tauri + React + Typescript
+# notelab
+A Tauri-based markdown note-taking app with a focus on performance and user experience.
 
-This template should help get you started developing with Tauri, React and Typescript in Vite.
+## TODO
+- better toolbar
+- export to pdf
 
 ## Recommended IDE Setup
 
